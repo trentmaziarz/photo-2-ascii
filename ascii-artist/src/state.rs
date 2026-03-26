@@ -1,3 +1,4 @@
+use egui::text::LayoutJob;
 use image::DynamicImage;
 use std::path::PathBuf;
 
@@ -63,8 +64,18 @@ pub struct AppState {
     // Internal
     /// Flag indicating the output needs recomputation.
     pub dirty: bool,
+    /// Flag indicating the cached layout jobs need rebuilding (font size, background, color mode display change).
+    pub layout_dirty: bool,
     /// Cached ASCII conversion output.
     pub cached_output: Option<AsciiOutput>,
+    /// Cached LayoutJobs for colored rendering (one per row).
+    pub cached_layout_jobs: Vec<LayoutJob>,
+    /// Color mode that the cached layout jobs were built for.
+    pub cached_layout_color_mode: ColorMode,
+    /// Font size that the cached layout jobs were built with.
+    pub cached_layout_font_size: f32,
+    /// Dark background flag that the cached layout jobs were built with.
+    pub cached_layout_dark_bg: bool,
     /// Status bar message.
     pub status_message: String,
     /// Time taken for last conversion in milliseconds.
@@ -90,7 +101,12 @@ impl Default for AppState {
             color_mode: ColorMode::Off,
             export_scale: 1.0,
             dirty: true,
+            layout_dirty: true,
             cached_output: None,
+            cached_layout_jobs: Vec::new(),
+            cached_layout_color_mode: ColorMode::Off,
+            cached_layout_font_size: 10.0,
+            cached_layout_dark_bg: true,
             status_message: String::new(),
             conversion_time_ms: 0.0,
             last_error: None,

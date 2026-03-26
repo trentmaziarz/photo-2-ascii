@@ -43,6 +43,7 @@ impl AsciiApp {
                     self.state.image_path = Some(path);
                     self.state.source_image = Some(flattened);
                     self.state.dirty = true;
+                    self.state.layout_dirty = true;
                     self.state.last_error = None;
                     self.state.status_message = "Image loaded successfully".to_string();
                 }
@@ -88,6 +89,28 @@ impl AsciiApp {
         );
         self.state.cached_output = Some(output);
         self.state.dirty = false;
+        // Engine output changed, so layout jobs must be rebuilt
+        self.state.layout_dirty = true;
+    }
+
+    /// Rebuilds cached LayoutJobs if display settings changed.
+    fn maybe_rebuild_layout(&mut self) {
+        // Check if display settings changed without engine reconversion
+        let display_changed = self.state.font_size != self.state.cached_layout_font_size
+            || self.state.dark_background != self.state.cached_layout_dark_bg
+            || self.state.color_mode != self.state.cached_layout_color_mode;
+
+        if !self.state.layout_dirty && !display_changed {
+            return;
+        }
+
+        if let Some(ref output) = self.state.cached_output {
+            self.state.cached_layout_jobs = preview::build_layout_jobs(output, &self.state);
+            self.state.cached_layout_font_size = self.state.font_size;
+            self.state.cached_layout_dark_bg = self.state.dark_background;
+            self.state.cached_layout_color_mode = self.state.color_mode;
+            self.state.layout_dirty = false;
+        }
     }
 
     /// Renders the toolbar at the top.
@@ -241,11 +264,12 @@ impl AsciiApp {
                 }
             }
 
-            // Reconvert if auto-fit changed columns
+            // Reconvert if auto-fit changed columns, then rebuild layout
             self.maybe_reconvert();
+            self.maybe_rebuild_layout();
 
-            if let Some(ref output) = self.state.cached_output {
-                preview::show(ui, output, &self.state);
+            if self.state.cached_output.is_some() {
+                preview::show(ui, &self.state);
             } else {
                 ui.centered_and_justified(|ui| {
                     ui.label(
