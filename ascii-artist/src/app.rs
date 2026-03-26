@@ -1,5 +1,6 @@
 use crate::ascii_engine;
 use crate::controls;
+use crate::export;
 use crate::image_loader;
 use crate::preview;
 use crate::state::{AppState, ColorMode};
@@ -113,9 +114,25 @@ impl AsciiApp {
         }
     }
 
+    /// Returns the base name of the loaded image (without extension), or "ascii_art".
+    fn base_name(&self) -> String {
+        self.state
+            .image_path
+            .as_ref()
+            .and_then(|p| p.file_stem())
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or_else(|| "ascii_art".to_string())
+    }
+
     /// Renders the toolbar at the top.
     fn render_toolbar(&mut self, ctx: &egui::Context) {
         let mut open_clicked = false;
+        let mut copy_clicked = false;
+        let mut save_txt_clicked = false;
+        let mut save_png_clicked = false;
+
+        let has_output = self.state.cached_output.is_some();
+
         egui::TopBottomPanel::top("toolbar").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("Load Image").clicked() {
@@ -125,6 +142,11 @@ impl AsciiApp {
                 // Keyboard shortcut: Ctrl+O
                 if ctx.input(|i| i.key_pressed(egui::Key::O) && i.modifiers.ctrl) {
                     open_clicked = true;
+                }
+
+                // Keyboard shortcut: Ctrl+C to copy
+                if has_output && ctx.input(|i| i.key_pressed(egui::Key::C) && i.modifiers.ctrl) {
+                    copy_clicked = true;
                 }
 
                 ui.separator();
@@ -139,22 +161,82 @@ impl AsciiApp {
                 }
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui.button("Export PNG").clicked() {
-                        self.state.status_message = "Export PNG: not yet implemented".to_string();
-                    }
-                    if ui.button("Save .txt").clicked() {
-                        self.state.status_message = "Save .txt: not yet implemented".to_string();
-                    }
-                    if ui.button("Copy to Clipboard").clicked() {
-                        self.state.status_message =
-                            "Copy to Clipboard: not yet implemented".to_string();
-                    }
+                    ui.add_enabled_ui(has_output, |ui| {
+                        if ui.button("Export PNG").clicked() {
+                            save_png_clicked = true;
+                        }
+                        if ui.button("Save .txt").clicked() {
+                            save_txt_clicked = true;
+                        }
+                        if ui.button("Copy to Clipboard").clicked() {
+                            copy_clicked = true;
+                        }
+                    });
                 });
             });
         });
 
         if open_clicked {
             self.open_file(ctx);
+        }
+        if copy_clicked {
+            self.do_copy_clipboard();
+        }
+        if save_txt_clicked {
+            self.do_save_txt();
+        }
+        if save_png_clicked {
+            self.do_save_png();
+        }
+    }
+
+    /// Copies ASCII output to the clipboard.
+    fn do_copy_clipboard(&mut self) {
+        if let Some(ref output) = self.state.cached_output {
+            match export::copy_to_clipboard(output) {
+                Ok(()) => self.state.status_message = "Copied to clipboard!".to_string(),
+                Err(e) => self.state.status_message = e,
+            }
+        }
+    }
+
+    /// Opens a save dialog and saves ASCII output as .txt.
+    fn do_save_txt(&mut self) {
+        let default_name = format!("{}_ascii.txt", self.base_name());
+        let file = rfd::FileDialog::new()
+            .add_filter("Text Files", &["txt"])
+            .set_file_name(&default_name)
+            .save_file();
+
+        if let Some(path) = file {
+            if let Some(ref output) = self.state.cached_output {
+                match export::save_txt(output, &path) {
+                    Ok(()) => {
+                        self.state.status_message = format!("Saved: {}", path.display());
+                    }
+                    Err(e) => self.state.status_message = e,
+                }
+            }
+        }
+    }
+
+    /// Opens a save dialog and saves ASCII output as .png.
+    fn do_save_png(&mut self) {
+        let default_name = format!("{}_ascii.png", self.base_name());
+        let file = rfd::FileDialog::new()
+            .add_filter("PNG Image", &["png"])
+            .set_file_name(&default_name)
+            .save_file();
+
+        if let Some(path) = file {
+            if let Some(ref output) = self.state.cached_output {
+                match export::save_png(output, &self.state, &path) {
+                    Ok(()) => {
+                        self.state.status_message = format!("Saved: {}", path.display());
+                    }
+                    Err(e) => self.state.status_message = e,
+                }
+            }
         }
     }
 
