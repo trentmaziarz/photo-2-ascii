@@ -1,13 +1,5 @@
 #![windows_subsystem = "windows"]
 
-mod app;
-mod ascii_engine;
-mod controls;
-mod export;
-mod image_loader;
-mod preview;
-mod state;
-
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -19,6 +11,6 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "ASCII Artist",
         options,
-        Box::new(|_cc| Ok(Box::new(app::AsciiApp::default()))),
+        Box::new(|_cc| Ok(Box::new(ascii_artist::app::AsciiApp::default()))),
     )
 }

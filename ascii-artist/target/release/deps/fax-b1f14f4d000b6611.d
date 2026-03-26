@@ -1,0 +1,11 @@
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\fax-b1f14f4d000b6611.d: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\maps.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\decoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\encoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\tiff.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libfax-b1f14f4d000b6611.rlib: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\maps.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\decoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\encoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\tiff.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libfax-b1f14f4d000b6611.rmeta: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\maps.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\decoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\encoder.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\tiff.rs
+
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\lib.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\maps.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\decoder.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\encoder.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\fax-0.2.6\src\tiff.rs:
