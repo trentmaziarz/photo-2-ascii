@@ -1,6 +1,8 @@
 use crate::ascii_engine;
+use crate::controls;
 use crate::image_loader;
-use crate::state::AppState;
+use crate::preview;
+use crate::state::{AppState, ColorMode};
 
 /// Main application struct implementing the eframe::App trait.
 #[derive(Default)]
@@ -54,6 +56,40 @@ impl AsciiApp {
         }
     }
 
+    /// Runs the ASCII conversion if the state is dirty and an image is loaded.
+    fn maybe_reconvert(&mut self) {
+        if !self.state.dirty {
+            return;
+        }
+        let Some(ref image) = self.state.source_image else {
+            return;
+        };
+
+        let start = std::time::Instant::now();
+        let output = ascii_engine::convert(
+            image,
+            &self.state.char_ramp,
+            self.state.output_columns,
+            self.state.brightness,
+            self.state.contrast,
+            self.state.invert,
+            self.state.color_mode,
+        );
+        self.state.conversion_time_ms = start.elapsed().as_secs_f64() * 1000.0;
+
+        let mode_label = match self.state.color_mode {
+            ColorMode::Off => "Grayscale",
+            ColorMode::FullRgb => "Full RGB",
+            ColorMode::Ansi16 => "ANSI 16",
+        };
+        self.state.status_message = format!(
+            "{} cols × {} rows | {:.1}ms | {}",
+            output.cols, output.rows, self.state.conversion_time_ms, mode_label
+        );
+        self.state.cached_output = Some(output);
+        self.state.dirty = false;
+    }
+
     /// Renders the toolbar at the top.
     fn render_toolbar(&mut self, ctx: &egui::Context) {
         let mut open_clicked = false;
@@ -68,12 +104,29 @@ impl AsciiApp {
                     open_clicked = true;
                 }
 
+                ui.separator();
+
+                ui.heading("ASCII Artist");
+
                 if let Some(path) = &self.state.image_path {
                     if let Some(name) = path.file_name() {
                         ui.separator();
                         ui.label(name.to_string_lossy().as_ref());
                     }
                 }
+
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    if ui.button("Export PNG").clicked() {
+                        self.state.status_message = "Export PNG: not yet implemented".to_string();
+                    }
+                    if ui.button("Save .txt").clicked() {
+                        self.state.status_message = "Save .txt: not yet implemented".to_string();
+                    }
+                    if ui.button("Copy to Clipboard").clicked() {
+                        self.state.status_message =
+                            "Copy to Clipboard: not yet implemented".to_string();
+                    }
+                });
             });
         });
 
@@ -82,10 +135,43 @@ impl AsciiApp {
         }
     }
 
+    /// Renders the status bar at the bottom.
+    fn render_status_bar(&self, ctx: &egui::Context) {
+        egui::TopBottomPanel::bottom("status").show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                if self.state.source_image.is_some() {
+                    ui.label(&self.state.status_message);
+                } else {
+                    ui.label("Load an image to begin");
+                }
+
+                if let Some(ref err) = self.state.last_error {
+                    ui.separator();
+                    ui.colored_label(egui::Color32::from_rgb(255, 80, 80), err);
+                }
+            });
+        });
+    }
+
+    /// Renders the right panel with controls.
+    fn render_controls_panel(&mut self, ctx: &egui::Context) {
+        let mut controls_changed = false;
+        egui::SidePanel::right("controls")
+            .default_width(240.0)
+            .show(ctx, |ui| {
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    controls_changed = controls::show(ui, &mut self.state);
+                });
+            });
+        if controls_changed {
+            self.state.dirty = true;
+        }
+    }
+
     /// Renders the left panel with the original image.
     fn render_image_panel(&self, ctx: &egui::Context) {
         egui::SidePanel::left("original")
-            .default_width(400.0)
+            .default_width(300.0)
             .show(ctx, |ui| {
                 ui.heading("Original Image");
                 ui.separator();
@@ -103,6 +189,7 @@ impl AsciiApp {
 
                     // Scale to fit panel while preserving aspect ratio
                     let scale = (available.x / tex_size.x).min(available.y / tex_size.y);
+                    let scale = scale.min(1.0); // Don't upscale beyond original
                     let display_size = egui::vec2(tex_size.x * scale, tex_size.y * scale);
 
                     ui.image(egui::load::SizedTexture::new(texture.id(), display_size));
@@ -130,61 +217,35 @@ impl AsciiApp {
                 }
             });
     }
-}
 
-impl AsciiApp {
-    /// Runs the ASCII conversion if the state is dirty and an image is loaded.
-    fn maybe_reconvert(&mut self) {
-        if !self.state.dirty {
-            return;
-        }
-        let Some(ref image) = self.state.source_image else {
-            return;
-        };
-
-        let start = std::time::Instant::now();
-        let output = ascii_engine::convert(
-            image,
-            &self.state.char_ramp,
-            self.state.output_columns,
-            self.state.brightness,
-            self.state.contrast,
-            self.state.invert,
-            self.state.color_mode,
-        );
-        self.state.conversion_time_ms = start.elapsed().as_secs_f64() * 1000.0;
-        self.state.status_message = format!(
-            "{}×{} — {:.1}ms",
-            output.cols, output.rows, self.state.conversion_time_ms
-        );
-        self.state.cached_output = Some(output);
-        self.state.dirty = false;
-    }
-}
-
-impl eframe::App for AsciiApp {
-    /// Called each frame to render the UI.
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        self.maybe_reconvert();
-        self.render_toolbar(ctx);
-        self.render_image_panel(ctx);
-
-        // Central panel: placeholder for ASCII preview (Phase 4)
+    /// Renders the central panel with the ASCII preview.
+    fn render_preview_panel(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default().show(ctx, |ui| {
+            // Paint background
+            let bg_color = if self.state.dark_background {
+                egui::Color32::from_gray(20)
+            } else {
+                egui::Color32::from_gray(240)
+            };
+            ui.painter()
+                .rect_filled(ui.available_rect_before_wrap(), 0.0, bg_color);
+
+            // Auto-fit column calculation
+            if self.state.auto_fit_columns && self.state.source_image.is_some() {
+                let char_width = self.state.font_size * 0.6;
+                let panel_width = ui.available_width() - 16.0;
+                let new_cols = (panel_width / char_width).floor() as usize;
+                if new_cols != self.state.output_columns && new_cols > 0 {
+                    self.state.output_columns = new_cols.max(20);
+                    self.state.dirty = true;
+                }
+            }
+
+            // Reconvert if auto-fit changed columns
+            self.maybe_reconvert();
+
             if let Some(ref output) = self.state.cached_output {
-                egui::ScrollArea::both().show(ui, |ui| {
-                    let text: String = output
-                        .chars
-                        .iter()
-                        .map(|row| row.iter().collect::<String>())
-                        .collect::<Vec<_>>()
-                        .join("\n");
-                    ui.label(
-                        egui::RichText::new(text)
-                            .monospace()
-                            .size(self.state.font_size),
-                    );
-                });
+                preview::show(ui, output, &self.state);
             } else {
                 ui.centered_and_justified(|ui| {
                     ui.label(
@@ -195,5 +256,20 @@ impl eframe::App for AsciiApp {
                 });
             }
         });
+    }
+}
+
+impl eframe::App for AsciiApp {
+    /// Called each frame to render the UI.
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Run conversion before rendering panels
+        self.maybe_reconvert();
+
+        // Panel order: top → bottom → right side → left side → central (must be last)
+        self.render_toolbar(ctx);
+        self.render_status_bar(ctx);
+        self.render_controls_panel(ctx);
+        self.render_image_panel(ctx);
+        self.render_preview_panel(ctx);
     }
 }

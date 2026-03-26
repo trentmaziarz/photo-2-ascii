@@ -3,7 +3,6 @@ use std::path::PathBuf;
 
 /// Available color modes for ASCII output.
 #[derive(Debug, Clone, Copy, PartialEq)]
-#[allow(dead_code)]
 pub enum ColorMode {
     /// No color — pure grayscale character mapping.
     Off,
@@ -14,7 +13,6 @@ pub enum ColorMode {
 }
 
 /// The result of converting an image to ASCII art.
-#[allow(dead_code)]
 pub struct AsciiOutput {
     /// 2D grid of ASCII characters (row-major).
     pub chars: Vec<Vec<char>>,
@@ -27,7 +25,6 @@ pub struct AsciiOutput {
 }
 
 /// Shared application state holding all settings and cached data.
-#[allow(dead_code)]
 pub struct AppState {
     // Image
     /// The currently loaded source image.
