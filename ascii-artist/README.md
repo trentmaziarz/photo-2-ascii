@@ -17,7 +17,23 @@ Real-time image-to-ASCII art converter built with Rust and egui.
 
 ## Build
 
+All build commands must be run from the `ascii-artist/` directory.
+
+### Quick build (no Rust required)
+
+Requires [Node.js](https://nodejs.org). This will automatically install the Rust toolchain if needed:
+
 ```
+cd ascii-artist
+npm run build
+```
+
+### Manual build
+
+If you already have [Rust](https://rustup.rs) installed:
+
+```
+cd ascii-artist
 cargo build --release
 ```
 

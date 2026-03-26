@@ -1,0 +1,9 @@
+{
+  "name": "ascii-artist",
+  "version": "0.1.0",
+  "description": "Real-time image-to-ASCII art converter built with Rust and egui",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "license": "MIT"
+}
