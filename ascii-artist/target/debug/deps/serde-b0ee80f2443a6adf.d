@@ -1,0 +1,14 @@
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\deps\serde-b0ee80f2443a6adf.d: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\build\serde-a508bb3001c872f6\out/private.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\deps\libserde-b0ee80f2443a6adf.rlib: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\build\serde-a508bb3001c872f6\out/private.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\deps\libserde-b0ee80f2443a6adf.rmeta: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\build\serde-a508bb3001c872f6\out/private.rs
+
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\debug\build\serde-a508bb3001c872f6\out/private.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\trent\\Desktop\\photo-2-ascii\\ascii-artist\\target\\debug\\build\\serde-a508bb3001c872f6\\out

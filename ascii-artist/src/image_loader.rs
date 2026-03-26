@@ -28,7 +28,6 @@ pub fn flatten_alpha(image: &DynamicImage, bg_color: [u8; 3]) -> DynamicImage {
 /// Resizes an image to the target column count for ASCII conversion.
 /// Accounts for the ~2:1 character cell aspect ratio.
 /// Returns (resized_image, cols, rows).
-#[allow(dead_code)]
 pub fn resize_for_ascii(image: &DynamicImage, target_cols: usize) -> (RgbaImage, usize, usize) {
     let (w, h) = (image.width() as f64, image.height() as f64);
     let cols = target_cols.max(1);

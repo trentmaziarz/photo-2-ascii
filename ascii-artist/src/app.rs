@@ -1,3 +1,4 @@
+use crate::ascii_engine;
 use crate::image_loader;
 use crate::state::AppState;
 
@@ -131,21 +132,68 @@ impl AsciiApp {
     }
 }
 
+impl AsciiApp {
+    /// Runs the ASCII conversion if the state is dirty and an image is loaded.
+    fn maybe_reconvert(&mut self) {
+        if !self.state.dirty {
+            return;
+        }
+        let Some(ref image) = self.state.source_image else {
+            return;
+        };
+
+        let start = std::time::Instant::now();
+        let output = ascii_engine::convert(
+            image,
+            &self.state.char_ramp,
+            self.state.output_columns,
+            self.state.brightness,
+            self.state.contrast,
+            self.state.invert,
+            self.state.color_mode,
+        );
+        self.state.conversion_time_ms = start.elapsed().as_secs_f64() * 1000.0;
+        self.state.status_message = format!(
+            "{}×{} — {:.1}ms",
+            output.cols, output.rows, self.state.conversion_time_ms
+        );
+        self.state.cached_output = Some(output);
+        self.state.dirty = false;
+    }
+}
+
 impl eframe::App for AsciiApp {
     /// Called each frame to render the UI.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.maybe_reconvert();
         self.render_toolbar(ctx);
         self.render_image_panel(ctx);
 
-        // Central panel: placeholder for ASCII output (Phase 3+)
+        // Central panel: placeholder for ASCII preview (Phase 4)
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.centered_and_justified(|ui| {
-                ui.label(
-                    egui::RichText::new("ASCII output will appear here")
-                        .size(16.0)
-                        .color(egui::Color32::GRAY),
-                );
-            });
+            if let Some(ref output) = self.state.cached_output {
+                egui::ScrollArea::both().show(ui, |ui| {
+                    let text: String = output
+                        .chars
+                        .iter()
+                        .map(|row| row.iter().collect::<String>())
+                        .collect::<Vec<_>>()
+                        .join("\n");
+                    ui.label(
+                        egui::RichText::new(text)
+                            .monospace()
+                            .size(self.state.font_size),
+                    );
+                });
+            } else {
+                ui.centered_and_justified(|ui| {
+                    ui.label(
+                        egui::RichText::new("Load an image to begin")
+                            .size(16.0)
+                            .color(egui::Color32::GRAY),
+                    );
+                });
+            }
         });
     }
 }
