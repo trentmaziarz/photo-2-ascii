@@ -1,0 +1,14 @@
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\thiserror-0a4b7f1bbdd62b07.d: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\aserror.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\display.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\var.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\private.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\build\thiserror-e434bd0d15380ba0\out/private.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libthiserror-0a4b7f1bbdd62b07.rlib: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\aserror.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\display.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\var.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\private.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\build\thiserror-e434bd0d15380ba0\out/private.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libthiserror-0a4b7f1bbdd62b07.rmeta: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\aserror.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\display.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\var.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\private.rs C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\build\thiserror-e434bd0d15380ba0\out/private.rs
+
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\lib.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\aserror.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\display.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\var.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-2.0.18\src\private.rs:
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\build\thiserror-e434bd0d15380ba0\out/private.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\trent\\Desktop\\photo-2-ascii\\ascii-artist\\target\\release\\build\\thiserror-e434bd0d15380ba0\\out

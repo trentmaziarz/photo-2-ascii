@@ -1,0 +1,11 @@
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\v_frame-6c92dd393c607408.d: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\frame.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\math.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\pixel.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\plane.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libv_frame-6c92dd393c607408.rlib: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\frame.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\math.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\pixel.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\plane.rs
+
+C:\Users\trent\Desktop\photo-2-ascii\ascii-artist\target\release\deps\libv_frame-6c92dd393c607408.rmeta: C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\lib.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\frame.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\math.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\pixel.rs C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\plane.rs
+
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\lib.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\frame.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\math.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\pixel.rs:
+C:\Users\trent\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\v_frame-0.3.9\src\plane.rs:
