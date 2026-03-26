@@ -5,6 +5,9 @@ use crate::image_loader;
 use crate::preview;
 use crate::state::{AppState, ColorMode};
 
+/// Duration in seconds before status messages auto-clear.
+const STATUS_CLEAR_SECS: f64 = 3.0;
+
 /// Main application struct implementing the eframe::App trait.
 #[derive(Default)]
 pub struct AsciiApp {
@@ -46,7 +49,8 @@ impl AsciiApp {
                     self.state.dirty = true;
                     self.state.layout_dirty = true;
                     self.state.last_error = None;
-                    self.state.status_message = "Image loaded successfully".to_string();
+                    self.state
+                        .set_status("Image loaded successfully".to_string());
                 }
                 Err(e) => {
                     self.state.last_error = Some(format!("Failed to load image: {e}"));
@@ -84,19 +88,17 @@ impl AsciiApp {
             ColorMode::FullRgb => "Full RGB",
             ColorMode::Ansi16 => "ANSI 16",
         };
-        self.state.status_message = format!(
+        self.state.set_status_persistent(format!(
             "{} cols × {} rows | {:.1}ms | {}",
             output.cols, output.rows, self.state.conversion_time_ms, mode_label
-        );
+        ));
         self.state.cached_output = Some(output);
         self.state.dirty = false;
-        // Engine output changed, so layout jobs must be rebuilt
         self.state.layout_dirty = true;
     }
 
     /// Rebuilds cached LayoutJobs if display settings changed.
     fn maybe_rebuild_layout(&mut self) {
-        // Check if display settings changed without engine reconversion
         let display_changed = self.state.font_size != self.state.cached_layout_font_size
             || self.state.dark_background != self.state.cached_layout_dark_bg
             || self.state.color_mode != self.state.cached_layout_color_mode;
@@ -111,6 +113,29 @@ impl AsciiApp {
             self.state.cached_layout_dark_bg = self.state.dark_background;
             self.state.cached_layout_color_mode = self.state.color_mode;
             self.state.layout_dirty = false;
+        }
+    }
+
+    /// Auto-clears timed status messages after STATUS_CLEAR_SECS.
+    fn maybe_clear_status(&mut self) {
+        if let Some(time) = self.state.status_message_time {
+            if time.elapsed().as_secs_f64() > STATUS_CLEAR_SECS {
+                // Restore the conversion stats if we have output, otherwise clear
+                if let Some(ref output) = self.state.cached_output {
+                    let mode_label = match self.state.color_mode {
+                        ColorMode::Off => "Grayscale",
+                        ColorMode::FullRgb => "Full RGB",
+                        ColorMode::Ansi16 => "ANSI 16",
+                    };
+                    self.state.status_message = format!(
+                        "{} cols × {} rows | {:.1}ms | {}",
+                        output.cols, output.rows, self.state.conversion_time_ms, mode_label
+                    );
+                } else {
+                    self.state.status_message.clear();
+                }
+                self.state.status_message_time = None;
+            }
         }
     }
 
@@ -135,7 +160,11 @@ impl AsciiApp {
 
         egui::TopBottomPanel::top("toolbar").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                if ui.button("Load Image").clicked() {
+                if ui
+                    .button("Load Image")
+                    .on_hover_text("Open an image file (Ctrl+O)")
+                    .clicked()
+                {
                     open_clicked = true;
                 }
 
@@ -162,13 +191,25 @@ impl AsciiApp {
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     ui.add_enabled_ui(has_output, |ui| {
-                        if ui.button("Export PNG").clicked() {
+                        if ui
+                            .button("Export PNG")
+                            .on_hover_text("Render ASCII art to a PNG image file")
+                            .clicked()
+                        {
                             save_png_clicked = true;
                         }
-                        if ui.button("Save .txt").clicked() {
+                        if ui
+                            .button("Save .txt")
+                            .on_hover_text("Save ASCII art as a plain text file")
+                            .clicked()
+                        {
                             save_txt_clicked = true;
                         }
-                        if ui.button("Copy to Clipboard").clicked() {
+                        if ui
+                            .button("Copy to Clipboard")
+                            .on_hover_text("Copy ASCII text to clipboard (Ctrl+C)")
+                            .clicked()
+                        {
                             copy_clicked = true;
                         }
                     });
@@ -194,8 +235,8 @@ impl AsciiApp {
     fn do_copy_clipboard(&mut self) {
         if let Some(ref output) = self.state.cached_output {
             match export::copy_to_clipboard(output) {
-                Ok(()) => self.state.status_message = "Copied to clipboard!".to_string(),
-                Err(e) => self.state.status_message = e,
+                Ok(()) => self.state.set_status("Copied to clipboard!".to_string()),
+                Err(e) => self.state.set_status(e),
             }
         }
     }
@@ -212,9 +253,9 @@ impl AsciiApp {
             if let Some(ref output) = self.state.cached_output {
                 match export::save_txt(output, &path) {
                     Ok(()) => {
-                        self.state.status_message = format!("Saved: {}", path.display());
+                        self.state.set_status(format!("Saved: {}", path.display()));
                     }
-                    Err(e) => self.state.status_message = e,
+                    Err(e) => self.state.set_status(e),
                 }
             }
         }
@@ -232,9 +273,9 @@ impl AsciiApp {
             if let Some(ref output) = self.state.cached_output {
                 match export::save_png(output, &self.state, &path) {
                     Ok(()) => {
-                        self.state.status_message = format!("Saved: {}", path.display());
+                        self.state.set_status(format!("Saved: {}", path.display()));
                     }
-                    Err(e) => self.state.status_message = e,
+                    Err(e) => self.state.set_status(e),
                 }
             }
         }
@@ -294,7 +335,7 @@ impl AsciiApp {
 
                     // Scale to fit panel while preserving aspect ratio
                     let scale = (available.x / tex_size.x).min(available.y / tex_size.y);
-                    let scale = scale.min(1.0); // Don't upscale beyond original
+                    let scale = scale.min(1.0);
                     let display_size = egui::vec2(tex_size.x * scale, tex_size.y * scale);
 
                     ui.image(egui::load::SizedTexture::new(texture.id(), display_size));
@@ -339,10 +380,12 @@ impl AsciiApp {
             if self.state.auto_fit_columns && self.state.source_image.is_some() {
                 let char_width = self.state.font_size * 0.6;
                 let panel_width = ui.available_width() - 16.0;
-                let new_cols = (panel_width / char_width).floor() as usize;
-                if new_cols != self.state.output_columns && new_cols > 0 {
-                    self.state.output_columns = new_cols.max(20);
-                    self.state.dirty = true;
+                if char_width > 0.0 && panel_width > 0.0 {
+                    let new_cols = (panel_width / char_width).floor() as usize;
+                    if new_cols != self.state.output_columns && new_cols > 0 {
+                        self.state.output_columns = new_cols.max(20);
+                        self.state.dirty = true;
+                    }
                 }
             }
 
@@ -355,9 +398,9 @@ impl AsciiApp {
             } else {
                 ui.centered_and_justified(|ui| {
                     ui.label(
-                        egui::RichText::new("Load an image to begin")
+                        egui::RichText::new("Click Load Image or press Ctrl+O to open an image")
                             .size(16.0)
-                            .color(egui::Color32::GRAY),
+                            .color(egui::Color32::from_gray(120)),
                     );
                 });
             }
@@ -368,6 +411,9 @@ impl AsciiApp {
 impl eframe::App for AsciiApp {
     /// Called each frame to render the UI.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Auto-clear timed status messages
+        self.maybe_clear_status();
+
         // Run conversion before rendering panels
         self.maybe_reconvert();
 

@@ -64,7 +64,7 @@ pub struct AppState {
     // Internal
     /// Flag indicating the output needs recomputation.
     pub dirty: bool,
-    /// Flag indicating the cached layout jobs need rebuilding (font size, background, color mode display change).
+    /// Flag indicating the cached layout jobs need rebuilding.
     pub layout_dirty: bool,
     /// Cached ASCII conversion output.
     pub cached_output: Option<AsciiOutput>,
@@ -78,10 +78,14 @@ pub struct AppState {
     pub cached_layout_dark_bg: bool,
     /// Status bar message.
     pub status_message: String,
+    /// Timestamp when the status message was set (for auto-clear).
+    pub status_message_time: Option<std::time::Instant>,
     /// Time taken for last conversion in milliseconds.
     pub conversion_time_ms: f64,
     /// Last error message, if any.
     pub last_error: Option<String>,
+    /// Whether the ramp is empty and we fell back to default.
+    pub ramp_fallback_active: bool,
 }
 
 impl Default for AppState {
@@ -108,8 +112,24 @@ impl Default for AppState {
             cached_layout_font_size: 10.0,
             cached_layout_dark_bg: true,
             status_message: String::new(),
+            status_message_time: None,
             conversion_time_ms: 0.0,
             last_error: None,
+            ramp_fallback_active: false,
         }
+    }
+}
+
+impl AppState {
+    /// Sets a status message with a timestamp for auto-clearing.
+    pub fn set_status(&mut self, msg: String) {
+        self.status_message = msg;
+        self.status_message_time = Some(std::time::Instant::now());
+    }
+
+    /// Sets a persistent status message (not auto-cleared).
+    pub fn set_status_persistent(&mut self, msg: String) {
+        self.status_message = msg;
+        self.status_message_time = None;
     }
 }
